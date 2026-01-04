@@ -169,6 +169,44 @@ const getUserTotalArtworks = async (req, res) => {
   }
 };
 
+// Get recommended artworks by category + artist + public
+const getRecommendedArtworks = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const artwork = await Artwork.findById(id);
+
+    if (!artwork) {
+      return res.status(404).json({
+        success: false,
+        message: "Artwork not found",
+      });
+    }
+
+    const { category, userName } = artwork;
+
+    const recommendedArtworks = await Artwork.find({
+      category,
+      userName,
+      visibility: "public",
+      _id: { $ne: artwork._id },
+    })
+      .sort({ createdAt: -1 })
+      .limit(6);
+
+    res.status(200).json({
+      success: true,
+      message: "Recommended artworks fetched successfully",
+      data: recommendedArtworks,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   addNewArtwork,
   getAllArtworks,
@@ -177,4 +215,5 @@ module.exports = {
   fetchArtworkDetails,
   increaseLikeCount,
   getUserTotalArtworks,
+  getRecommendedArtworks,
 };
