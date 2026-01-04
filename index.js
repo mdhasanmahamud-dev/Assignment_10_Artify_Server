@@ -14,7 +14,12 @@ admin.initializeApp({
 //App lavel middleware
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://artify-ef3b9.web.app"],
+    credentials: true,
+  })
+);
 
 //Import artwork routes
 const artRouter = require("./src/routes/artWorkRoutes");
@@ -28,7 +33,7 @@ app.use("/api/my-favorite", favoritesRouter);
 
 async function main() {
   await mongoose.connect(process.env.MONGODB_URL, {
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 50000,
   });
 }
 

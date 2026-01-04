@@ -148,6 +148,27 @@ const increaseLikeCount = async (req, res) => {
   }
 };
 
+// Get total artworks count for logged-in user
+const getUserTotalArtworks = async (req, res) => {
+  const userEmail = req.user.email;
+  console.log(userEmail);
+  console.log("first");
+  try {
+    const totalArtworks = await Artwork.countDocuments({ userEmail });
+    res.status(200).json({
+      success: true,
+      message: "Total artworks fetched successfully",
+      totalArtworks,
+    });
+  } catch (error) {
+    console.error("Error fetching total artworks:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   addNewArtwork,
   getAllArtworks,
@@ -155,4 +176,5 @@ module.exports = {
   getPublicArtWorks,
   fetchArtworkDetails,
   increaseLikeCount,
+  getUserTotalArtworks,
 };
