@@ -92,4 +92,30 @@ const removeFavorite = async (req, res) => {
   }
 };
 
-module.exports = { addToFavorites, getUserFavorites, removeFavorite };
+// Get total favorite count for logged-in user
+const getUserTotalFavorites = async (req, res) => {
+  const userEmail = req.user.email;
+
+  try {
+    const totalFavorites = await Favorite.countDocuments({ userEmail });
+
+    res.status(200).json({
+      success: true,
+      message: "Total favorites fetched successfully",
+      totalFavorites,
+    });
+  } catch (error) {
+    console.error("Error fetching total favorites:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+module.exports = {
+  addToFavorites,
+  getUserFavorites,
+  removeFavorite,
+  getUserTotalFavorites
+};
